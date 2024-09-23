@@ -40,6 +40,20 @@ class _SignupPageState extends State<SignupPage> {
             ),
             const SizedBox(height: 20),
             AuthGradientButton(),
+            const SizedBox(height: 20),
+            RichText(
+                text: TextSpan(
+                    text: 'Already have an account? ',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: [
+                  TextSpan(
+                    text: 'Sign In',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ]))
           ],
         ),
       ),
