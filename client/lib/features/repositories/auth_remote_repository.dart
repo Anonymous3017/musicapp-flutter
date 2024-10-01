@@ -26,5 +26,24 @@ class AuthRemoteRepository {
     }
   }
 
-  Future<void> login() async {}
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/auth/login'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
+      print(response.body);
+    } catch (e) {
+      print('Failed to connect to the server: $e');
+    }
+  }
 }

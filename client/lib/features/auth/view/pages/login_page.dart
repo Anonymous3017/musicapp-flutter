@@ -1,5 +1,7 @@
+import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/features/repositories/auth_remote_repository.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -55,22 +57,39 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               AuthGradientButton(
                 buttonText: 'Sign in',
-                onTap: () {},
+                onTap: () async {
+                  try {
+                    await AuthRemoteRepository().login(
+                      email: emailControler.text,
+                      password: passwordControler.text,
+                    );
+                  } catch (e) {
+                    print('Failed to connect to the server: $e');
+                  }
+                },
               ),
               const SizedBox(height: 20),
-              RichText(
-                  text: TextSpan(
-                      text: "Don't have an account? ",
-                      style: Theme.of(context).textTheme.titleMedium,
-                      children: [
-                    TextSpan(
-                      text: 'Sign Up',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ]))
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupPage()));
+                },
+                child: RichText(
+                    text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: Theme.of(context).textTheme.titleMedium,
+                        children: [
+                      TextSpan(
+                        text: 'Sign Up',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ])),
+              )
             ],
           ),
         ),
