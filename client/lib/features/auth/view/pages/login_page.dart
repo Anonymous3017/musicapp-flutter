@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     emailControler.dispose();
     passwordControler.dispose();
     super.dispose();
-    formKey.currentState!.validate();
+    formKey.currentState?.validate();
   }
 
   @override
