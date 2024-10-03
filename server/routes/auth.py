@@ -42,7 +42,7 @@ def signup_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user_db)
 
-    return {"message": "User created successfully"}
+    return user_db
 
 @router.post("/login")
 def login_user(user: UserLogin, db: Session = Depends(get_db)):
