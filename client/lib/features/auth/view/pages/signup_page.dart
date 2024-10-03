@@ -1,18 +1,20 @@
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:client/features/repositories/auth_remote_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  ConsumerState<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPageState extends ConsumerState<SignupPage> {
   final nameControler = TextEditingController();
   final emailControler = TextEditingController();
   final passwordControler = TextEditingController();
@@ -66,27 +68,22 @@ class _SignupPageState extends State<SignupPage> {
               AuthGradientButton(
                 buttonText: 'Sign up',
                 onTap: () async {
-                  try {
-                    final res = await AuthRemoteRepository().signup(
-                      name: nameControler.text,
-                      email: emailControler.text,
-                      password: passwordControler.text,
-                    );
-
-                    final val = switch(res) {
-                      Left(value: final l) => l,
-                      Right(value: final r) => r.toString(),
-                    };
-                    print(val);
-                  } catch (e) {
-                    print(e);
+                  if (formKey.currentState!.validate()) {
+                    await ref.read(authViewmodelProvider.notifier).signUpUser(
+                          name: nameControler.text,
+                          email: emailControler.text,
+                          password: passwordControler.text,
+                        );
                   }
                 },
               ),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()));
                 },
                 child: RichText(
                     text: TextSpan(
