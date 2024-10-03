@@ -38,7 +38,7 @@ class AuthRemoteRepository {
     }
   }
 
-  Future<void> login({
+  Future<Either<AppFailure, UserModel>> login({
     required String email,
     required String password,
   }) async {
@@ -53,9 +53,15 @@ class AuthRemoteRepository {
           'password': password,
         }),
       );
-      print(response.body);
+      final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+      if(response.statusCode != 200) {
+        return Left(AppFailure(resBodyMap['detail'] as String));
+      }
+
+      return Right(UserModel.fromMap(resBodyMap));
     } catch (e) {
       print('Failed to connect to the server: $e');
+      return Left(AppFailure(e.toString()));
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
 import 'package:client/features/repositories/auth_remote_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,10 +60,16 @@ class _LoginPageState extends State<LoginPage> {
                 buttonText: 'Sign in',
                 onTap: () async {
                   try {
-                    await AuthRemoteRepository().login(
+                    final res = await AuthRemoteRepository().login(
                       email: emailControler.text,
                       password: passwordControler.text,
                     );
+
+                    final val = switch(res) {
+                      Left(value: final l) => l,
+                      Right(value: final r) => r,
+                    };
+                    print(val);
                   } catch (e) {
                     print('Failed to connect to the server: $e');
                   }
