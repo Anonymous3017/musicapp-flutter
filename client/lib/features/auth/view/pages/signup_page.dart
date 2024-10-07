@@ -1,3 +1,4 @@
+import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
@@ -32,77 +33,82 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Sign Up.',
-                style: TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
+      body: isLoading
+          ? const Loader()
+          : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Sign Up.',
+                      style: TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    CustomField(
+                      hintText: 'Name',
+                      controller: nameControler,
+                    ),
+                    const SizedBox(height: 15),
+                    CustomField(
+                      hintText: 'Email',
+                      controller: emailControler,
+                    ),
+                    const SizedBox(height: 15),
+                    CustomField(
+                      hintText: 'Password',
+                      controller: passwordControler,
+                      isObscureText: true,
+                    ),
+                    const SizedBox(height: 20),
+                    AuthGradientButton(
+                      buttonText: 'Sign up',
+                      onTap: () async {
+                        if (formKey.currentState!.validate()) {
+                          await ref
+                              .read(authViewmodelProvider.notifier)
+                              .signUpUser(
+                                name: nameControler.text,
+                                email: emailControler.text,
+                                password: passwordControler.text,
+                              );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
+                      },
+                      child: RichText(
+                          text: TextSpan(
+                              text: 'Already have an account? ',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              children: [
+                            TextSpan(
+                              text: 'Sign In',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ])),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
-              CustomField(
-                hintText: 'Name',
-                controller: nameControler,
-              ),
-              const SizedBox(height: 15),
-              CustomField(
-                hintText: 'Email',
-                controller: emailControler,
-              ),
-              const SizedBox(height: 15),
-              CustomField(
-                hintText: 'Password',
-                controller: passwordControler,
-                isObscureText: true,
-              ),
-              const SizedBox(height: 20),
-              AuthGradientButton(
-                buttonText: 'Sign up',
-                onTap: () async {
-                  if (formKey.currentState!.validate()) {
-                    await ref.read(authViewmodelProvider.notifier).signUpUser(
-                          name: nameControler.text,
-                          email: emailControler.text,
-                          password: passwordControler.text,
-                        );
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
-                },
-                child: RichText(
-                    text: TextSpan(
-                        text: 'Already have an account? ',
-                        style: Theme.of(context).textTheme.titleMedium,
-                        children: [
-                      TextSpan(
-                        text: 'Sign In',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ])),
-              )
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

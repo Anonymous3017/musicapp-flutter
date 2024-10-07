@@ -18,6 +18,7 @@ class AuthViewmodel extends _$AuthViewmodel {
     required String email,
     required String password,
   }) async {
+    state = const AsyncValue.loading();
     final res = await _authRemoteRepository.signup(
       name: name,
       email: email,
@@ -25,8 +26,11 @@ class AuthViewmodel extends _$AuthViewmodel {
     );
 
     final val = switch (res) {
-      Left(value: final l) => l,
-      Right(value: final r) => r,
+      Left(value: final l) => state = AsyncValue.error(
+          l.message,
+          StackTrace.current,
+        ),
+      Right(value: final r) => state = AsyncValue.data(r),
     };
 
     print(val);
