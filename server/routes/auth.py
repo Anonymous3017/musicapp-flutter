@@ -11,6 +11,8 @@ from pydantic_schemas.user_login import UserLogin
 import jwt
 from dotenv import load_dotenv
 
+from middleware.auth_middleware import auth_middleware
+
 
 router = APIRouter()
 load_dotenv()
@@ -71,28 +73,13 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
     return {"token": jwt_token, "user": user_db}
 
 @router.get("/")
-def get_users(db: Session = Depends(get_db), x_auth_token=Header()):
-    try:
-        #get the user token from the header's
-        if not x_auth_token:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="No auth token, Access Denied"
-            )
-        #validate the token
-        verified_token = jwt.decode(x_auth_token, os.getenv("JWT_SECRET_KEY"), algorithms=["HS256"])
+def get_users(db: Session = Depends(get_db),
+               user_dict = Depends(auth_middleware)):
+    user = db.query(User).filter(User.id == user_dict.get("uid")).first()
 
-        if not verified_token:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token verification failed, Autherization Denied"
-            )
-        #get the id from the token
-        uid = verified_token.get("id")
-        return uid
-        #postgress database get the user information
-    except jwt.PyJWTError as e:
+    if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token verification failed, Autherization Denied"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
+    return user
