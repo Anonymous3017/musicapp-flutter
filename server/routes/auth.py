@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Header, status
 from sqlalchemy.orm import Session
 import bcrypt
 import uuid
@@ -69,3 +69,30 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
     jwt_token = jwt.encode({"id": user_db.id }, os.getenv("JWT_SECRET_KEY"))
 
     return {"token": jwt_token, "user": user_db}
+
+@router.get("/")
+def get_users(db: Session = Depends(get_db), x_auth_token=Header()):
+    try:
+        #get the user token from the header's
+        if not x_auth_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="No auth token, Access Denied"
+            )
+        #validate the token
+        verified_token = jwt.decode(x_auth_token, os.getenv("JWT_SECRET_KEY"), algorithms=["HS256"])
+
+        if not verified_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token verification failed, Autherization Denied"
+            )
+        #get the id from the token
+        uid = verified_token.get("id")
+        return uid
+        #postgress database get the user information
+    except jwt.PyJWTError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token verification failed, Autherization Denied"
+        )
