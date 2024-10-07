@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_remote_repository.g.dart';
+
 @riverpod
 AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref) {
   return AuthRemoteRepository();
@@ -62,11 +63,13 @@ class AuthRemoteRepository {
         }),
       );
       final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
-      if(response.statusCode != 200) {
+      if (response.statusCode != 200) {
         return Left(AppFailure(resBodyMap['detail'] as String));
       }
 
-      return Right(UserModel.fromMap(resBodyMap));
+      return Right(UserModel.fromMap(resBodyMap['user']).copyWith(
+        token: resBodyMap['token'] as String,
+      ));
     } catch (e) {
       print('Failed to connect to the server: $e');
       return Left(AppFailure(e.toString()));
