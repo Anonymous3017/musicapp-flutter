@@ -1,3 +1,4 @@
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
@@ -44,14 +45,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             // }));
           },
           error: (error, st) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentMaterialBanner()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(error.toString()),
-                  backgroundColor: Colors.red,
-                ),
-              );
+            showSnackBar(context, error.toString(), Colors.red);
           },
 
           loading: () {},

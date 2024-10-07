@@ -1,3 +1,4 @@
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
@@ -40,27 +41,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       (_, next) {
         next?.when(
           data: (data) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentMaterialBanner()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Account created successfully'),
-                  backgroundColor: Colors.green,
-                ),
-              );
+            showSnackBar(
+              context,
+              'Sign up successful',
+              Colors.green,
+            );
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const LoginPage();
             }));
           },
           error: (error, st) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentMaterialBanner()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(error.toString()),
-                  backgroundColor: Colors.red,
-                ),
-              );
+            showSnackBar(context, error.toString(), Colors.red);
           },
           loading: () {},
         );
