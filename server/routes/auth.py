@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 import bcrypt
@@ -7,9 +8,12 @@ from pydantic_schemas.user_create import UserCreate
 from fastapi import APIRouter
 from database import get_db
 from pydantic_schemas.user_login import UserLogin
+import jwt
+from dotenv import load_dotenv
 
 
 router = APIRouter()
+load_dotenv()
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -60,4 +64,8 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Invalid credentials"
         )
-    return user_db
+    
+    #generate jwt token
+    jwt_token = jwt.encode({"id": user_db.id }, os.getenv("JWT_SECRET_KEY"))
+
+    return {"token": jwt_token, "user": user_db}
