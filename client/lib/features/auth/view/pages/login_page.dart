@@ -1,18 +1,21 @@
+import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:client/features/repositories/auth_remote_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final emailControler = TextEditingController();
   final passwordControler = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -28,9 +31,37 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
+
+    ref.listen(
+      authViewmodelProvider,
+      (_, next) {
+        next?.when(
+          data: (data) {
+            // TODO: Navigate to the home page
+            // Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //   return const HomePage();
+            // }));
+          },
+          error: (error, st) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentMaterialBanner()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(error.toString()),
+                  backgroundColor: Colors.red,
+                ),
+              );
+          },
+
+          loading: () {},
+        );
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
+      body: isLoading ? const Loader() : Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: formKey,
