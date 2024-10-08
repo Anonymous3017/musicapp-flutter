@@ -77,7 +77,7 @@ class AuthRemoteRepository {
   }
 
   Future<Either<AppFailure, UserModel>> getCurrentUserData({
-    required String token,
+    required String token,                                        
   }) async {
     try {
       final response = await http.get(
