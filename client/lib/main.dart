@@ -8,8 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
-
   await container.read(authViewmodelProvider.notifier).initSharedPref();
+  final userModel = await container.read(authViewmodelProvider.notifier).getData();
+  print(userModel);
   runApp(
     UncontrolledProviderScope(
       container: container,

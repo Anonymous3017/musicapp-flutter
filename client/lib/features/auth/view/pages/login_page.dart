@@ -47,7 +47,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           error: (error, st) {
             showSnackBar(context, error.toString(), Colors.red);
           },
-
           loading: () {},
         );
       },
@@ -55,77 +54,75 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(),
-      body: isLoading ? const Loader() : Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Sign In',
-                style: TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
+      body: isLoading
+          ? const Loader()
+          : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    CustomField(
+                      hintText: 'Email',
+                      controller: emailControler,
+                    ),
+                    const SizedBox(height: 15),
+                    CustomField(
+                      hintText: 'Password',
+                      controller: passwordControler,
+                      isObscureText: true,
+                    ),
+                    const SizedBox(height: 20),
+                    AuthGradientButton(
+                      buttonText: 'Sign in',
+                      onTap: () async {
+                        if (formKey.currentState!.validate()) {
+                          await ref
+                              .read(authViewmodelProvider.notifier)
+                              .loginUser(
+                                email: emailControler.text,
+                                password: passwordControler.text,
+                              );
+                        } else {
+                          showSnackBar(context, 'Invalid form', Colors.red);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignupPage()));
+                      },
+                      child: RichText(
+                          text: TextSpan(
+                              text: "Don't have an account? ",
+                              style: Theme.of(context).textTheme.titleMedium,
+                              children: const [
+                            TextSpan(
+                              text: 'Sign Up',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ])),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
-              CustomField(
-                hintText: 'Email',
-                controller: emailControler,
-              ),
-              const SizedBox(height: 15),
-              CustomField(
-                hintText: 'Password',
-                controller: passwordControler,
-                isObscureText: true,
-              ),
-              const SizedBox(height: 20),
-              AuthGradientButton(
-                buttonText: 'Sign in',
-                onTap: () async {
-                  try {
-                    final res = await AuthRemoteRepository().login(
-                      email: emailControler.text,
-                      password: passwordControler.text,
-                    );
-
-                    final val = switch(res) {
-                      Left(value: final l) => l,
-                      Right(value: final r) => r,
-                    };
-                    print(val);
-                  } catch (e) {
-                    print('Failed to connect to the server: $e');
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignupPage()));
-                },
-                child: RichText(
-                    text: TextSpan(
-                        text: "Don't have an account? ",
-                        style: Theme.of(context).textTheme.titleMedium,
-                        children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ])),
-              )
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
