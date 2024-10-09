@@ -32,6 +32,12 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Upload Song'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.check),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
