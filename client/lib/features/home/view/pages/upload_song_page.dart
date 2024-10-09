@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/custom_field.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
@@ -19,6 +21,26 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
   final songNameController = TextEditingController();
   final artistController = TextEditingController();
   Color selectedColor = Pallete.cardColor;
+  File? selectedImage;
+  File? selectedAudio;
+
+  void selectAudio() async {
+    final pickedAudio = await pickAudio();
+    if (pickedAudio != null) {
+      setState(() {
+        selectedAudio = pickedAudio;
+      });
+    }
+  }
+
+  void selectImage() async {
+    final pickedImage = await pickImage();
+    if (pickedImage != null) {
+      setState(() {
+        selectedImage = pickedImage;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -44,35 +66,49 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              DottedBorder(
-                color: Pallete.borderColor,
-                radius: const Radius.circular(10),
-                borderType: BorderType.RRect,
-                strokeCap: StrokeCap.round,
-                dashPattern: const [10, 4],
-                child: const SizedBox(
-                  height: 150,
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.folder_open,
-                        size: 40,
+              GestureDetector(
+                onTap: selectImage,
+                child: selectedImage != null
+                    ? SizedBox(
+                        height: 150,
+                        width: double.infinity,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            selectedImage!,
+                            fit: BoxFit.cover,
+                          ),
+                        ))
+                    : DottedBorder(
+                        color: Pallete.borderColor,
+                        radius: const Radius.circular(10),
+                        borderType: BorderType.RRect,
+                        strokeCap: StrokeCap.round,
+                        dashPattern: const [10, 4],
+                        child: const SizedBox(
+                          height: 150,
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.folder_open,
+                                size: 40,
+                              ),
+                              SizedBox(height: 15),
+                              Text('Select a thumbnail for your song',
+                                  style: TextStyle(fontSize: 15)),
+                            ],
+                          ),
+                        ),
                       ),
-                      SizedBox(height: 15),
-                      Text('Select a thumbnail for your song',
-                          style: TextStyle(fontSize: 15)),
-                    ],
-                  ),
-                ),
               ),
               const SizedBox(height: 40),
               CustomField(
                 hintText: 'Pick Song',
                 controller: null,
                 readOnly: true,
-                onTap: () {},
+                onTap: selectAudio,
               ),
               const SizedBox(height: 20),
               CustomField(
