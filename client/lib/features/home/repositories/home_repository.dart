@@ -4,12 +4,24 @@ import 'package:client/core/constants/server_constants.dart';
 import 'package:client/core/failure/failure.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'home_repository.g.dart';
+
+@riverpod
+HomeRepository homeRepository(HomeRepositoryRef ref) {
+  return HomeRepository();
+}
 
 class HomeRepository {
-  Future<Either<AppFailure, String>> uploadSong(
-    File selectedImage,
-    File selectedAudio,
-  ) async {
+  Future<Either<AppFailure, String>> uploadSong({
+    required File selectedThumbnail,
+    required File selectedAudio,
+    required String artist,
+    required String songName,
+    required String hexCode,
+    required String token,
+  }) async {
     try {
       final request = http.MultipartRequest(
           'POST', Uri.parse('${ServerConstants.baseUrl}/song/upload'));
@@ -18,20 +30,20 @@ class HomeRepository {
         ..files.addAll(
           [
             await http.MultipartFile.fromPath('song', selectedAudio.path),
-            await http.MultipartFile.fromPath('thumbnail', selectedImage.path),
+            await http.MultipartFile.fromPath(
+                'thumbnail', selectedThumbnail.path),
           ],
         )
         ..fields.addAll(
           {
-            'artist': 'Taylor',
-            'song_name': 'Love Story',
-            'hex_code': 'FFFFFF',
+            'artist': artist,
+            'song_name': songName,
+            'hex_code': hexCode,
           },
         )
         ..headers.addAll(
           {
-            'x-auth-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliMDY5ZmY0LWI0ZmUtNDc4ZS1iOGU5LWJkNzUzNzQyMWNmZiJ9.Q2vts1hcmaTORCh9085YXf6HGozCwM5GJ77zrdXigUI'
+            'x-auth-token': token,
           },
         );
 
