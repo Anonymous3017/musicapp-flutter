@@ -89,18 +89,31 @@ class MusicSlab extends ConsumerWidget {
             ],
           ),
         ),
-        Positioned(
-          bottom: 0,
-          left: 8,
-          child: Container(
-            height: 2,
-            width: 20,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(7),
-            ),
-          ),
-        ),
+        StreamBuilder(
+            stream: songNotifier.audioPlayer?.positionStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox();
+              }
+              final position = snapshot.data;
+              final duration = songNotifier.audioPlayer!.duration;
+              double sliderValue = 0.0;
+              if (position != null && duration != null) {
+                sliderValue = position.inMicroseconds / duration.inMicroseconds;
+              }
+              return Positioned(
+                bottom: 0,
+                left: 8,
+                child: Container(
+                  height: 2,
+                  width: (MediaQuery.of(context).size.width - 32) * sliderValue,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                ),
+              );
+            }),
         Positioned(
             bottom: 0,
             right: 8,
