@@ -11,6 +11,7 @@ class MusicSlab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentSong = ref.watch(currentSongNotifierProvider);
+    final songNotifier = ref.read(currentSongNotifierProvider.notifier);
 
     if (currentSong == null) {
       return const SizedBox();
@@ -75,9 +76,11 @@ class MusicSlab extends ConsumerWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: songNotifier.playPause,
                     icon: Icon(
-                      CupertinoIcons.play_fill,
+                      songNotifier.isPlaying
+                          ? CupertinoIcons.pause_fill
+                          : CupertinoIcons.play_fill,
                       color: Pallete.whiteColor,
                     ),
                   ),
