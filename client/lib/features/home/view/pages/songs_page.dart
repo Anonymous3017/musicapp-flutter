@@ -1,5 +1,6 @@
 import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/home/viewmodel/home_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +14,22 @@ class SongsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resenctlyPlayedSongs =
         ref.watch(homeViewModelProvider.notifier).getRecentlyPlayedSongs();
-    return SafeArea(
+    final currentSong = ref.watch(currentSongNotifierProvider);
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      decoration: currentSong == null
+          ? null
+          : BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  hexToColor(currentSong.hex_code),
+                  Pallete.transparentColor,
+                ],
+                stops: const [0.0, 0.30],
+              ),
+            ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
