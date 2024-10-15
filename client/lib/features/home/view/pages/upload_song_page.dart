@@ -53,7 +53,7 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        ref.watch(homeViewModselProvider.select((value) => value?.isLoading == true));
+        ref.watch(homeViewModelProvider.select((value) => value?.isLoading == true));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Upload Song'),
@@ -63,7 +63,7 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
               if (formKey.currentState!.validate() &&
                   selectedImage != null &&
                   selectedAudio != null) {
-                ref.read(homeViewModselProvider.notifier).uploadSong(
+                ref.read(homeViewModelProvider.notifier).uploadSong(
                       selectedThumbnail: selectedImage!,
                       selectedAudio: selectedAudio!,
                       artist: artistController.text,
