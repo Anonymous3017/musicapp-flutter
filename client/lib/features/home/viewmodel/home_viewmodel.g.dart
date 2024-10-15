@@ -20,21 +20,21 @@ final getAllSongsProvider = AutoDisposeFutureProvider<List<SongModel>>.internal(
 );
 
 typedef GetAllSongsRef = AutoDisposeFutureProviderRef<List<SongModel>>;
-String _$homeViewModselHash() => r'95d64337a1fdd781f7e4a734d0fbef5971433b5c';
+String _$homeViewModelHash() => r'836a953ebe5e2cd4ac425abe231bc62c6c4d349f';
 
-/// See also [HomeViewModsel].
-@ProviderFor(HomeViewModsel)
-final homeViewModselProvider =
-    AutoDisposeNotifierProvider<HomeViewModsel, AsyncValue?>.internal(
-  HomeViewModsel.new,
-  name: r'homeViewModselProvider',
+/// See also [HomeViewModel].
+@ProviderFor(HomeViewModel)
+final homeViewModelProvider =
+    AutoDisposeNotifierProvider<HomeViewModel, AsyncValue?>.internal(
+  HomeViewModel.new,
+  name: r'homeViewModelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$homeViewModselHash,
+      : _$homeViewModelHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$HomeViewModsel = AutoDisposeNotifier<AsyncValue?>;
+typedef _$HomeViewModel = AutoDisposeNotifier<AsyncValue?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
