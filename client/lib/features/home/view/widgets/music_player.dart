@@ -107,48 +107,69 @@ class MusicPlayer extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  Column(
-                    children: [
-                      SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Pallete.whiteColor,
-                          inactiveTrackColor:
-                              Pallete.whiteColor.withOpacity(0.117),
-                          trackShape: const RectangularSliderTrackShape(),
-                          trackHeight: 4.0,
-                          thumbColor: Pallete.whiteColor,
-                          thumbShape: const RoundSliderThumbShape(
-                              enabledThumbRadius: 8.0),
-                          overlayShape: SliderComponentShape.noOverlay,
-                        ),
-                        child: Slider(
-                          value: 0.5,
-                          onChanged: (val) {},
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Row(
-                    children: [
-                      Text(
-                        '0:05',
-                        style: TextStyle(
-                          color: Pallete.subtitleText,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(
-                        '3:45',
-                        style: TextStyle(
-                          color: Pallete.subtitleText,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      )
-                    ],
-                  ),
+                  StreamBuilder(
+                      stream: songNotifier.audioPlayer!.positionStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+                        final position = snapshot.data;
+                        final duration = songNotifier.audioPlayer!.duration;
+                        double sliderValue = 0.0;
+                        if (position != null && duration != null) {
+                          sliderValue =
+                              position.inMicroseconds / duration.inMicroseconds;
+                        }
+                        return Column(
+                          children: [
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: Pallete.whiteColor,
+                                inactiveTrackColor:
+                                    Pallete.whiteColor.withOpacity(0.117),
+                                trackShape: const RectangularSliderTrackShape(),
+                                trackHeight: 4.0,
+                                thumbColor: Pallete.whiteColor,
+                                thumbShape: const RoundSliderThumbShape(
+                                    enabledThumbRadius: 8.0),
+                                overlayShape: SliderComponentShape.noOverlay,
+                              ),
+                              child: Slider(
+                                value: sliderValue,
+                                min: 0,
+                                max: 1,
+                                onChanged: (val) {
+                                  sliderValue = val;
+                                  
+                                },
+                                onChangeEnd: songNotifier.seek,
+                              ),
+                            ),
+                             Row(
+                              children: [
+                                Text(
+                                  '${position?.inMinutes}:${(position?.inSeconds ?? 0) < 10 ? '0${position?.inSeconds}' : position?.inSeconds}',
+                                  style: const TextStyle(
+                                    color: Pallete.subtitleText,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Text(
+                                  '${duration?.inMinutes}:${(duration?.inSeconds ?? 0) < 10 ? '0${duration?.inSeconds}' : duration?.inSeconds}',
+                                  style: const TextStyle(
+                                    color: Pallete.subtitleText,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        );
+                      }),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
