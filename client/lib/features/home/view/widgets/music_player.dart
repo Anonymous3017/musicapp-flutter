@@ -15,12 +15,13 @@ class MusicPlayer extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              hexToColor(currentSong!.hex_code),
-              const Color(0xff121212),
-            ]),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            hexToColor(currentSong!.hex_code),
+            const Color(0xff121212),
+          ],
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Scaffold(
@@ -29,11 +30,19 @@ class MusicPlayer extends ConsumerWidget {
           backgroundColor: Pallete.transparentColor,
           leading: Transform.translate(
             offset: const Offset(-15, 0),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Image.asset(
-                'assets/images/pull-down-arrow.png',
-                color: Pallete.whiteColor,
+            child: InkWell(
+              highlightColor: Pallete.transparentColor,
+              splashColor: Pallete.transparentColor,
+              focusColor: Pallete.transparentColor,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/images/pull-down-arrow.png',
+                  color: Pallete.whiteColor,
+                ),
               ),
             ),
           ),
