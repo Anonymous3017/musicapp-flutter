@@ -51,5 +51,10 @@
 	<string>This App uses the Photo Library to save Album thumbnail image.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This App uses the Microphone to record audio.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
+
 </plist>
