@@ -4,8 +4,6 @@ class AppFailure {
 
   AppFailure([this.message = 'Sorry something went wrong']);
 
-  
-
   @override
   String toString() => 'AppFailure(message: $message)';
 }

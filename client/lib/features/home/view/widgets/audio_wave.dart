@@ -16,7 +16,6 @@ class _AudioWaveState extends State<AudioWave> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initAudioPlayer();
   }

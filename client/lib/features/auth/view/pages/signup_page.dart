@@ -23,7 +23,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     nameControler.dispose();
     emailControler.dispose();
     passwordControler.dispose();
@@ -117,7 +116,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                           text: TextSpan(
                               text: 'Already have an account? ',
                               style: Theme.of(context).textTheme.titleMedium,
-                              children: [
+                              children: const [
                             TextSpan(
                               text: 'Sign In',
                               style: TextStyle(
