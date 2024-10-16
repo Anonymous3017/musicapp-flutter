@@ -1,5 +1,5 @@
 import 'package:client/core/providers/current_user_notifier.dart';
-import 'package:client/features/auth/model/user_model.dart';
+import 'package:client/core/models/user_model.dart';
 import 'package:client/features/repositories/auth_local_repository.dart';
 import 'package:client/features/repositories/auth_remote_repository.dart';
 import 'package:fpdart/fpdart.dart';
@@ -79,7 +79,9 @@ class AuthViewmodel extends _$AuthViewmodel {
     state = const AsyncValue.loading();
     final token = _authLocalRepository.getToken();
     if (token != null) {
-      final res = await _authRemoteRepository.getCurrentUserData(token: token);
+      final res = await _authRemoteRepository.getCurrentUserData(
+        token: token,
+      );
       final val = switch (res) {
         Left(value: final l) => state = AsyncValue.error(
             l.message,
