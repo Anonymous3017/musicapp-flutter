@@ -1,4 +1,9 @@
 fastapi
-pydantic
+uvicorn
 sqlalchemy
-psycopg2-binary
+python-dotenv
+bcrypt
+cloudinary
+pydantic
+python-jose[cryptography]
+psycopg2
