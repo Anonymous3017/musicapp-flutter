@@ -95,7 +95,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 password: passwordControler.text,
                               );
                         } else {
-                          showSnackBar(context, 'Invalid form', Colors.red);
+                          showSnackBar(context, 'Invalid form', const Color.fromARGB(255, 216, 192, 190));
                         }
                       },
                     ),

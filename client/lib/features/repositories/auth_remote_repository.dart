@@ -48,33 +48,49 @@ class AuthRemoteRepository {
   }
 
   Future<Either<AppFailure, UserModel>> login({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('${ServerConstants.baseUrl}/auth/login'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-      final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
-      if (response.statusCode != 200) {
-        return Left(AppFailure(resBodyMap['detail'] as String));
-      }
-
-      return Right(UserModel.fromMap(resBodyMap['user']).copyWith(
-        token: resBodyMap['token'] as String,
-      ));
-    } catch (e) {
-      print('Failed to connect to the server: $e');
-      return Left(AppFailure(e.toString()));
+  required String email,
+  required String password,
+}) async {
+  try {
+    final response = await http.post(
+      Uri.parse('${ServerConstants.baseUrl}/auth/login'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+      }),
+    );
+    final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode != 200) {
+      return Left(AppFailure(resBodyMap['detail'] as String));
     }
+
+    // Debugging: Check if 'user' is null
+    if (resBodyMap['user'] == null) {
+      print('Debug: "user" field is null in the response.');
+      return Left(AppFailure('The "user" field is null in the server response'));
+    }
+
+    // Debugging: Check if 'token' is null
+    if (resBodyMap['token'] == null) {
+      print('Debug: "token" field is null in the response.');
+      return Left(AppFailure('The "token" field is null in the server response'));
+    }
+
+    // If both 'user' and 'token' exist, return the UserModel
+    return Right(UserModel.fromMap(resBodyMap['user']).copyWith(
+      token: resBodyMap['token'] as String,
+    ));
+
+  } catch (e) {
+    // Debugging: Print the exception if there’s a failure
+    print('Failed to connect to the server: $e');
+    return Left(AppFailure('Failed to connect to the server: ${e.toString()}'));
   }
+}
+
 
   Future<Either<AppFailure, UserModel>> getCurrentUserData({
     required String token,

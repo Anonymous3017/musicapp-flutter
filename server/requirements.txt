@@ -6,4 +6,5 @@ bcrypt
 cloudinary
 pydantic
 python-jose[cryptography]
-psycopg2
+psycopg2 # install PostgreSQL driver
+fastapi[standard]
