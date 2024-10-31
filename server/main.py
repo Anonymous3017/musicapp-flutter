@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 from database import engine
 from models.base import Base
 from routes import auth, song
